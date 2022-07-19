@@ -23,8 +23,10 @@ def featureMap_array(seq, model, aa_vocab, name="unk", fix_length=100):
 ### 用于画图
 def draw_mutant_heatmap(pred, name="unk", **kwargs):
 
-    fig, axes = plt.subplots(1, 3, figsize=(15, 5), dpi=300, sharex=False)
-    y_data = [pred[:, :, 0], pred[:, :, 1], pred.argmax(-1)]
-    for ax, y_, title_ in zip(axes, y_data, ["Benign", "Pathogenic", "Benign or pathogenic"]):
-        pic = sns.heatmap(y_, ax = ax, xticklabels= list(amino_acid_alphabet.keys()),**kwargs)
-        ax.set_title(f"{name}'s {title_} map")
+    fig, ax = plt.subplots(1, 1, figsize=(5, 5), dpi=300, sharex=False)
+    y_data = pred[:, :, 0]
+    pic = sns.heatmap(y_data, ax = ax, xticklabels= list(amino_acid_alphabet.keys()),**kwargs)
+    ax.set_title(f"{name}'s Benign or pathogenic map")
+
+
+
