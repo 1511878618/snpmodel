@@ -11,7 +11,7 @@ class TextCNN(nn.Module):
         super(TextCNN, self).__init__()
         
         if isinstance(embedding, int):
-            self.embedding = nn.Embedding(num_embeddings=len(vocab), embedding_dim=embedding, padding_idx=sentiment_data.vocab["<pad>"])
+            self.embedding = nn.Embedding(num_embeddings=len(vocab), embedding_dim=embedding, padding_idx=vocab.vocab["<pad>"])
             self.d_m = embedding
         if embedding is None:  # 自定义传入embedding
             self.embedding = None

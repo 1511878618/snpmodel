@@ -1,6 +1,7 @@
-from .utils import *
+from snpmodel.utils import *
 import time 
 from sklearn.metrics import accuracy_score
+from snpmodel.metrics import accuracy
 def test(net, dataIter, loss, device=try_gpu()):
     net.eval()
     

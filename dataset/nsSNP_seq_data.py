@@ -1,7 +1,12 @@
-from numpy import isin
-from . import *
-from .preprocess import build_vocab, SNP_flaking_fixLengthSeq
 
+import pandas as pd
+import torch
+from torch.nn import functional as F
+from torch.utils.data import DataLoader, random_split
+from snpmodel.dataset.preprocess import build_vocab, SNP_flaking_fixLengthSeq
+
+
+__all__ = ["load_data", "clinvar_dataset", "get_clinvar_dataset_seq"]
 def load_data(Clinvar_seq_data_path="Clinvar_seq_data.csv", remove_ter = False, remove_gene=False):
     try:
         data = pd.read_csv(Clinvar_seq_data_path, sep = "\t")
@@ -15,7 +20,9 @@ def load_data(Clinvar_seq_data_path="Clinvar_seq_data.csv", remove_ter = False, 
     if remove_gene and isinstance(remove_gene, str) and len(remove_gene) > 0:
         data = data[~data["GeneSymbol"] == remove_gene]
     elif remove_gene and isinstance(remove_gene, list) and len(remove_gene) >0:  # 传入的list
+        data[data["GeneSymbol"].apply(lambda x: x in remove_gene)].to_csv("drop_seq.csv", index = None)
         data = data[~data["GeneSymbol"].apply(lambda x: x in remove_gene)]
+
         
     return [data[col].tolist() for col in data.columns]
 
@@ -39,8 +46,8 @@ def clinvar_dataset(path = "Clinvar_seq_data.csv", remove_ter=True,  remove_gene
         m_tensor = m_tensor.float()
         
         l = 1 if "pathogenic" in l.lower() else 0
-        l_tensor = torch.tensor(l, dtype = torch.long)
-        l_tensor = F.one_hot(l_tensor, 2)
+        l_tensor = torch.tensor(l, dtype = torch.float)
+        # l_tensor = F.one_hot(l_tensor, 2)
         out.append([n, m_tensor, l_tensor])
         
     return out, aa_vocab

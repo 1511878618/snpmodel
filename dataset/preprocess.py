@@ -1,4 +1,18 @@
-from . import *
+
+import re 
+from collections import Counter
+from torchtext.vocab import vocab
+
+__all__ = ["build_vocab", "splitAAS_HGVS", "padding_fixLengthSeq", "SNP_flaking_fixLengthSeq", "build_vocab_from_alphabet_dict"]
+
+
+def build_vocab_from_alphabet_dict(alphabet:dict):
+    unk = "<unk>"
+    padding = "<pad>"
+
+    aaVocab = vocab(Counter(alphabet.keys()), specials = [unk, padding], special_first=True)
+    aaVocab.set_default_index(aaVocab[unk])
+    return aaVocab
 
 def build_vocab(seq_list):
     """
